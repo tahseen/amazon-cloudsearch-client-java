@@ -164,7 +164,7 @@ public class AwsCSDocumentService {
 	private Object toJSON(AwsCSDeleteRequest document) throws JSONException {
 		JSONObject doc = new JSONObject();
 		doc.put("type", "delete");
-		doc.put("id", document.id);
+		doc.put("id", document.id.toLowerCase());
 		doc.put("version", document.version);
 		return doc;
 	}
