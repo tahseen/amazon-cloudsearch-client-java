@@ -35,11 +35,6 @@
       <attribute value="jar:file:/home/tahseen/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.1.1/jackson-databind-2.1.1-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/javatuples/javatuples/1.2/javatuples-1.2.jar" sourcepath="M2_REPO/org/javatuples/javatuples/1.2/javatuples-1.2-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/tahseen/.m2/repository/org/javatuples/javatuples/1.2/javatuples-1.2-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
   <classpathentry kind="var" path="M2_REPO/joda-time/joda-time/2.3/joda-time-2.3.jar" sourcepath="M2_REPO/joda-time/joda-time/2.3/joda-time-2.3-sources.jar">
     <attributes>
       <attribute value="jar:file:/home/tahseen/.m2/repository/joda-time/joda-time/2.3/joda-time-2.3-javadoc.jar!/" name="javadoc_location"/>
