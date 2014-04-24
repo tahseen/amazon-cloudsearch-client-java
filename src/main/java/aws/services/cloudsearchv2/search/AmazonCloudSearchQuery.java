@@ -1,5 +1,7 @@
 package aws.services.cloudsearchv2.search;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -313,11 +315,11 @@ public class AmazonCloudSearchQuery {
 		this.returnFields = builder.toString();
 	}	
 	
-	public String build() {
+	public String build() throws UnsupportedEncodingException {
 		StringBuilder builder = new StringBuilder();
 		
 		if(cursor != null) {
-			builder.append("cursor").append("=").append(cursor);
+			builder.append("cursor").append("=").append(URLEncoder.encode(cursor, "UTF-8"));
 		}
 		
 		if(expressions.size() > 0) {
@@ -325,7 +327,7 @@ public class AmazonCloudSearchQuery {
 				if(builder.length() > 0) {
 					builder.append("&");
 				}
-				builder.append(entry.getKey()).append("=").append(entry.getValue());
+				builder.append("expr").append(".").append(entry.getKey()).append("=").append(URLEncoder.encode(entry.getValue(), "UTF-8"));
 			}
 		}
 		
@@ -334,17 +336,23 @@ public class AmazonCloudSearchQuery {
 				if(builder.length() > 0) {
 					builder.append("&");
 				}
-				builder.append("facet").append(".").append(facet.field).append("=").append("{");
+				builder.append("facet").append(".").append(facet.field).append("=");
+				
+				StringBuilder value = new StringBuilder();
+				value.append("{");
 				if(facet.sort != null) {
-					builder.append("sort").append(":").append("\"").append(facet.sort).append("\"");
+					value.append("sort").append(":").append("\"").append(facet.sort).append("\"");
 				}
 				if(facet.buckets != null) {
-					builder.append("buckets").append(":").append(facet.buckets);
+					value.append("buckets").append(":").append(facet.buckets);
 				}
 				if(facet.size != null) {
-					builder.append("size").append(":").append(facet.size);
+					value.append("size").append(":").append(facet.size);
 				}
-				builder.append("}");
+				
+				value.append("}");
+				
+				builder.append(URLEncoder.encode(value.toString(), "UTF-8"));
 			}
 		}
 		
@@ -361,20 +369,26 @@ public class AmazonCloudSearchQuery {
 				if(builder.length() > 0) {
 					builder.append("&");
 				}
-				builder.append("highlight").append(".").append(highlight.field).append("=").append("{");
+				builder.append("highlight").append(".").append(highlight.field).append("=");
+				
+				StringBuilder value = new StringBuilder();
+				value.append("{");
 				if(highlight.format != null) {
-					builder.append("format").append(":").append("'").append(highlight.format).append("'");
+					value.append("format").append(":").append("'").append(highlight.format).append("'");
 				}
 				if(highlight.maxPhrases != null) {
-					builder.append("max_phrases").append(":").append(highlight.maxPhrases);
+					value.append("max_phrases").append(":").append(highlight.maxPhrases);
 				}
 				if(highlight.preTag != null) {
-					builder.append("pre_tag").append(":").append("'").append(highlight.preTag).append("'");
+					value.append("pre_tag").append(":").append("'").append(highlight.preTag).append("'");
 				}
 				if(highlight.postTag != null) {
-					builder.append("post_tag").append(":").append("'").append(highlight.postTag).append("'");
+					value.append("post_tag").append(":").append("'").append(highlight.postTag).append("'");
 				}
-				builder.append("}");
+				value.append("}");
+				
+				builder.append(URLEncoder.encode(value.toString(), "UTF-8"));
+
 			}
 		}
 		
@@ -382,75 +396,87 @@ public class AmazonCloudSearchQuery {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("partial").append("=").append(partial);
+			builder.append("partial").append("=").append(URLEncoder.encode(partial + "", "UTF-8"));
 		}	
 
 		if(pretty != null) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("pretty").append("=").append(pretty);
+			builder.append("pretty").append("=").append(URLEncoder.encode(pretty + "", "UTF-8"));
 		}
 		
 		if(query != null) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("q").append("=").append(query);
+			builder.append("q").append("=").append(URLEncoder.encode(query, "UTF-8"));
 		}
 		
 		if(queryOptions.size() > 0) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("q").append(".").append("options").append("=").append("{");
+			
+			builder.append("q").append(".").append("options").append("=");
+			
+			StringBuilder value = new StringBuilder();
+			value.append("{");
 			for(Map.Entry<String, String> entry : queryOptions.entrySet()) {
-				builder.append(entry.getKey()).append(":").append(entry.getValue());
+				value.append(entry.getKey()).append(":").append("'").append(entry.getValue()).append("'");
 			}
-			builder.append("}");
+			value.append("}");
+
+			builder.append(URLEncoder.encode(value.toString(), "UTF-8"));
 		}
 		
 		if(queryParser != null) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("q.parser").append("=").append(queryParser);
+			builder.append("q.parser").append("=").append(URLEncoder.encode(queryParser, "UTF-8"));
 		}
 		
 		if(returnFields != null) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("return").append("=").append(returnFields);
+			builder.append("return").append("=").append(URLEncoder.encode(returnFields, "UTF-8"));
 		}
 		
 		if(size != null) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
-			builder.append("size").append("=").append(size);
+			builder.append("size").append("=").append(URLEncoder.encode(size + "", "UTF-8"));
 		}
 		
 		if(sort.size() > 0) {
 			if(builder.length() > 0) {
 				builder.append("&");
 			}
+			
 			builder.append("sort").append("=");
+			
+			StringBuilder value = new StringBuilder();
 			int i = 0;
 			for(Map.Entry<String, String> entry : sort.entrySet()) {
-				builder.append(entry.getKey()).append(" ").append(entry.getValue());
+				value.append(entry.getKey()).append(" ").append(entry.getValue());
 				if(i != sort.size() - 1) {
-					builder.append(",");
+					value.append(",");
 
 				}
 			}
+			
+			builder.append(URLEncoder.encode(value.toString(), "UTF-8"));
 		}		
 		
 		if(start != null) {
 			if(builder.length() > 0) {
+				
 				builder.append("&");
 			}
-			builder.append("start").append("=").append(start);
+			builder.append("start").append("=").append(URLEncoder.encode(start + "", "UTF-8"));
 		}
 		
 		return builder.toString();

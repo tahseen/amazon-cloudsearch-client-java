@@ -184,6 +184,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 	public void addDocument(AmazonCloudSearchAddRequest document) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException, JSONException {
 		JSONArray docs = new JSONArray();
 		docs.put(toJSON(document));
+		updateDocumentRequest(docs.toString());
 	}
 
 	/**
@@ -200,6 +201,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		for(AmazonCloudSearchAddRequest doc : documents) {
 			docs.put(toJSON(doc));
 		}
+		updateDocumentRequest(docs.toString());
 	}
 	
 	
@@ -374,7 +376,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		AmazonCloudSearchResult result = null;
 		
 		try {
-			Response response = Request.Post("https://" + getSearchEndpoint() + "/2013-01-01/search?" + query.build())
+			Response response = Request.Get("https://" + getSearchEndpoint() + "/2013-01-01/search?" + query.build())
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
@@ -415,25 +417,26 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		if(hits != null) {
 			result.found = hits.getInt("found");
 			result.start = hits.getInt("start");
-			
-			JSONArray hitArray = root.getJSONArray("hit");
-			if(hitArray != null) {
-				for(int i = 0; i < hitArray.length(); i++) {
-					JSONObject row = hitArray.getJSONObject(i);
-					Hit hit = new Hit();
-					hit.id = row.getString("id");
-					JSONObject fields = row.getJSONObject("fields");
-					String[] names = JSONObject.getNames(fields);
-					for(String name : names) {
-						if(hit.fields == null) {
-							hit.fields = new HashMap<String, String>();
+			if(result.found > 0) {
+				JSONArray hitArray = hits.getJSONArray("hit");
+				if(hitArray != null) {
+					for(int i = 0; i < hitArray.length(); i++) {
+						JSONObject row = hitArray.getJSONObject(i);
+						Hit hit = new Hit();
+						hit.id = row.getString("id");
+						JSONObject fields = row.getJSONObject("fields");
+						String[] names = JSONObject.getNames(fields);
+						for(String name : names) {
+							if(hit.fields == null) {
+								hit.fields = new HashMap<String, String>();
+							}
+							hit.fields.put(name, fields.getString(name));
 						}
-						hit.fields.put(name, fields.getString(name));
+						if(result.hits == null) {
+							result.hits = new ArrayList<Hit>();
+						}
+						result.hits.add(hit);
 					}
-					if(result.hits == null) {
-						result.hits = new ArrayList<Hit>();
-					}
-					result.hits.add(hit);
 				}
 			}
 		}

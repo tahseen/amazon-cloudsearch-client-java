@@ -89,11 +89,13 @@ Below is a simple example of searching documents.
 ```java
 AmazonCloudSearchQuery query = new AmazonCloudSearchQuery();
 query.query = "Dining Tables";
-query.returnFields = "title,sku_no,description";
-query.start = 20;
-query.size = 20;
-query.addExpression("sort_expr","(0.3*popularity)+(0.7*_score)");
-query.sort("sort_expr", "desc");
+query.queryParser = "simple";
+query.start = 0;
+query.size = 16;
+query.setDefaultOperator("or");
+query.setFields("sku_no^11", "title^10", "description^9", "features^8", "specification^8", "categories^7");
+query.addExpression("sort_expr", "(0.3*popularity)+(0.7*_score)");
+query.addSort("sort_expr", "desc");
 
 AmazonCloudSearchResult result = client.search(query);
 ```
