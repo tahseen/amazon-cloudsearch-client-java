@@ -237,7 +237,7 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 	
 	private void updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
 		try {
-			Response response = Request.Post("https://" + getSearchEndpoint() + "/2013-01-01/documents/batch")
+			Response response = Request.Post("https://" + getDocumentEndpoint() + "/2013-01-01/documents/batch")
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
