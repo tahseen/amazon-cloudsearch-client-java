@@ -29,11 +29,11 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>      
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk</artifactId>
-      <version>1.9.13</version>
-    </dependency>    
+   	<dependency>
+		<groupId>com.amazonaws</groupId>
+		<artifactId>aws-java-sdk-cloudsearch</artifactId>
+		<version>1.9.35</version>
+	</dependency>    
     <dependency>      
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>fluent-hc</artifactId>
