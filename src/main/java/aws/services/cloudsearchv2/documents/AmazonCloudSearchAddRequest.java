@@ -46,6 +46,10 @@ public class AmazonCloudSearchAddRequest {
 	public void addField(String name, Integer value) {
 		fields.put(name, value);
 	}	
+		
+	public void addField(String name, Long value) {
+		fields.put(name, value);
+	}	
 	
 	public void addField(String name, List<String> values) {
 		fields.put(name, values);
