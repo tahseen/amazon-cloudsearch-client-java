@@ -1,5 +1,8 @@
 package aws.services.cloudsearchv2;
 
+import com.amazonaws.util.json.JSONObject;
+
+
 /**
  * This Exception is thrown when there is a problem with the request.
  * 
@@ -24,9 +27,9 @@ public class AmazonCloudSearchRequestException extends Exception {
 		super(message);
 	}
 
-	public AmazonCloudSearchRequestException(String message, String request, String response) {
-		super(message);
-		this.request = request;
+	public AmazonCloudSearchRequestException(String request, String response) {
+	    super(response);
+	    this.request = request;
 		this.response = response;
 	}
 }

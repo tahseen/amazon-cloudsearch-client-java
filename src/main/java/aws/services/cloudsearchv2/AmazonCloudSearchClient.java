@@ -237,20 +237,25 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 		updateDocumentRequest(docs.toString());
 	}
 	
-	private void updateDocumentRequest(String body) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
-		try {
+	private void updateDocumentRequest(String requestBody) throws AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
+	    String responseBody = null;
+	    try {
 			Response response = Request.Post("https://" + getDocumentEndpoint() + "/2013-01-01/documents/batch")
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
+			        .addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
-			        .bodyString(body, ContentType.APPLICATION_JSON)
+			        .bodyString(requestBody, ContentType.APPLICATION_JSON)
 			        .execute();
 
 			HttpResponse resp = response.returnResponse();
+			responseBody = inputStreamToString(resp.getEntity().getContent());
+			JSONObject json = new JSONObject(responseBody); // convert it to JSON object
+			responseBody = json.toString(4); // format the json response
 			
 			int statusCode = resp.getStatusLine().getStatusCode();
 			if(statusCode >= 400 && statusCode < 500) {
-				throw new AmazonCloudSearchRequestException(addDocumentErrorMessage(statusCode), body, inputStreamToString(resp.getEntity().getContent()));
+				throw new AmazonCloudSearchRequestException(requestBody, responseBody);
 			} else if(statusCode >= 500 && statusCode < 600){
 				throw new AmazonCloudSearchInternalServerException("Internal Server Error. Please try again as this might be a transient error condition.");
 			}
@@ -258,7 +263,9 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 			throw new AmazonCloudSearchInternalServerException(e);
 		} catch (IOException e) {
 			throw new AmazonCloudSearchInternalServerException(e);
-		}
+		} catch (JSONException e) {
+		    throw new AmazonCloudSearchInternalServerException(responseBody, e);
+        }
 	}
 	
 	private String inputStreamToString(InputStream in) throws IOException {
@@ -270,28 +277,6 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 			output.write(buffer, 0, n);
 		}
 		return output.toString();
-	}
-
-	private String addDocumentErrorMessage(int statusCode) {
-		if(statusCode == 400) {
-			return "The Content-Type header is missing.	";
-		} else if(statusCode == 411) {
-			return "The Content-Length header is missing.";
-		} else if(statusCode == 404) {
-			return "URL path does not match ''/YYYY-MM-DD/documents/batch''.";
-		} else if(statusCode == 405) {
-			return "The HTTP method is not POST. Requests must be posted to documents/batch.";
-		} else if(statusCode == 406) {
-			return "Accept header specifies a content type other than 'application/xml' or 'application/json'. Responses can be sent only as XML or JSON.";
-		} else if(statusCode == 413) {
-			return "The length of the request body is larger than the maximum allowed value.";
-		} else if(statusCode == 415) {
-			return "The content type is something other than 'application/json' or 'application/xml' or The character set is something other than 'ASCII', 'ISO-8859-1', or 'UTF-8'";
-		}  else if(statusCode == 403) {
-			return "Access Denied";
-		}else{
-			return "Malformed request.";
-		}
 	}
 
 	private Object toJSON(AmazonCloudSearchDeleteRequest document) throws JSONException {
@@ -372,33 +357,37 @@ public class AmazonCloudSearchClient extends com.amazonaws.services.cloudsearchv
 	 * @throws AmazonCloudSearchInternalServerException 
 	 * @throws JSONException 
 	 */
-	public AmazonCloudSearchResult search(AmazonCloudSearchQuery query) throws IllegalStateException, AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException, JSONException {
+	public AmazonCloudSearchResult search(AmazonCloudSearchQuery query) throws IllegalStateException, AmazonCloudSearchRequestException, AmazonCloudSearchInternalServerException {
 		AmazonCloudSearchResult result = null;
-		
+		String responseBody = null;
 		try {
 			Response response = Request.Get("https://" + getSearchEndpoint() + "/2013-01-01/search?" + query.build())
 			        .useExpectContinue()
 			        .version(HttpVersion.HTTP_1_1)
+                    .addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
 			        .addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType())
 			        .execute();
 
 			HttpResponse resp = response.returnResponse();
-			String responseBody = inputStreamToString(resp.getEntity().getContent());
-			
+			responseBody = inputStreamToString(resp.getEntity().getContent());
+	        JSONObject json = new JSONObject(responseBody); // convert it to JSON object
+	        responseBody = json.toString(4); // format the json response
+	            
 			int statusCode = resp.getStatusLine().getStatusCode();
 			if(statusCode >= 400 && statusCode < 500) {
-				throw new AmazonCloudSearchRequestException(addDocumentErrorMessage(statusCode), "", responseBody);
+				throw new AmazonCloudSearchRequestException("", responseBody);
 			} else if(statusCode >= 500 && statusCode < 600){
 				throw new AmazonCloudSearchInternalServerException("Internal Server Error. Please try again as this might be a transient error condition.");
 			}
 			
 			result = fromJSON(responseBody);
-			
 		} catch (ClientProtocolException e) {
 			throw new AmazonCloudSearchInternalServerException(e);
 		} catch (IOException e) {
 			throw new AmazonCloudSearchInternalServerException(e);
-		}
+		} catch (JSONException e) {
+            throw new AmazonCloudSearchInternalServerException(responseBody, e);
+        }
 		
 		return result;
 	}

@@ -102,7 +102,7 @@ AmazonCloudSearchResult result = client.search(query);
 
 Dependencies 
 ============
-* Amazon SDK 1.7.6 and higher
+* Amazon SDK 1.9.33 and higher
 * Apache Fluent HC Module 4.2 and higher
 
 Maven
@@ -111,8 +111,8 @@ Maven
 ```xml
 <dependency>      
   <groupId>com.amazonaws</groupId>
-  <artifactId>aws-java-sdk</artifactId>
-  <version>1.7.6</version>
+  <artifactId>aws-java-sdk-cloudsearch</artifactId>
+  <version>1.9.33</version>
 </dependency>    
 <dependency>      
   <groupId>org.apache.httpcomponents</groupId>
