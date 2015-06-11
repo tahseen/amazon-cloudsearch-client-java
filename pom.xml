@@ -4,7 +4,7 @@
   <groupId>aws.services.cloudsearchv2</groupId>
   <artifactId>amazon-cloudsearch-client</artifactId>
   <packaging>jar</packaging>
-  <version>1.2</version>
+  <version>1.3</version>
   
   <name>amazon-cloudsearch-client-java</name>
   <description>AWS CloudSearch Client for Document Service and Searching</description>

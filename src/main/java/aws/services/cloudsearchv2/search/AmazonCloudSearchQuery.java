@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -422,8 +423,19 @@ public class AmazonCloudSearchQuery {
 			
 			StringBuilder value = new StringBuilder();
 			value.append("{");
-			for(Map.Entry<String, String> entry : queryOptions.entrySet()) {
-				value.append(entry.getKey()).append(":").append("'").append(entry.getValue()).append("'");
+			Iterator<Map.Entry<String, String>> i = queryOptions.entrySet().iterator();
+			while(i.hasNext()) {
+			    Map.Entry<String, String> entry = i.next();
+			    
+			    if(isArray(entry.getValue())) {
+	                 value.append(entry.getKey()).append(":").append(entry.getValue());
+			    } else {
+			        value.append(entry.getKey()).append(":").append("'").append(entry.getValue()).append("'");
+			    }
+			    
+				if(i.hasNext()) {
+				    value.append(",");
+				}
 			}
 			value.append("}");
 
@@ -481,4 +493,8 @@ public class AmazonCloudSearchQuery {
 		
 		return builder.toString();
 	}
+
+    private boolean isArray(String value) {
+        return value != null && value.length() > 1 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']';
+    }
 }
