@@ -1,3 +1,7 @@
+
+**This project is no longer maintained. This project was created to fill the gap in the Amazon Aws Java Sdk. Amazon has added missing search features to their sdk. Please use the offical sdk https://github.com/aws/aws-sdk-java/tree/master/aws-java-sdk-cloudsearch**
+
+
 Amazon Cloudsearch Client Java
 ==============================
 
